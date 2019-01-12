@@ -2767,6 +2767,31 @@ describe('optional properties', function() {
             });
     });
 
+    it('comments have leading whitespace', function() {
+        doctrine.parse(
+            ["  /**", "   * This function comment is parsed by doctrine", "* @param {{ok:String}} userName", "   */"].join('\n'),
+            { unwrap: true, sloppy: true}
+        ).should.eql({
+                "description": "This function comment is parsed by doctrine",
+                "tags": [{
+                    "title": "param",
+                    "description": null,
+                    "type": {
+                        "type": "RecordType",
+                        "fields": [{
+                            "type": "FieldType",
+                            "key": "ok",
+                            "value": {
+                                "type": "NameExpression",
+                                "name": "String"
+                            }
+                        }]
+                    },
+                    "name": "userName"
+                }]
+            });
+    });
+
     it('default array', function() {
         doctrine.parse(
             ["/**", " * @property {String} [val=['foo']] some description", " */"].join('\n'),
